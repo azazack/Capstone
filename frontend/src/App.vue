@@ -1,13 +1,35 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <img alt="Vue logo" src="./assets/logo.png"/>
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite"/>
+  <button @click="test">test</button>
+  <button @click="testw">testw</button>
+  <button @click="logout">logout</button>
 </template>
+
+
+<script setup lang="ts">
+import useAxios from "./composables/useAxios";
+import {useAuth} from "./store/auth";
+
+const {axios} = useAxios()
+
+const auth = useAuth()
+
+const test =  () => {
+  axios.post('http://127.0.0.1:8000/api/v1/login',{
+    email:'d@d.com',
+    password:'d'
+  }).then(({data}) => {
+    auth.setToken(data.jwt)
+  })
+}
+
+const testw =  () => {
+  axios.get('http://127.0.0.1:8000/api/v1/user')
+}
+
+const logout =  () => {
+  axios.post('http://127.0.0.1:8000/api/v1/logout')
+}
+</script>
 
 <style>
 #app {

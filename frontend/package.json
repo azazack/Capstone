@@ -8,7 +8,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.25"
+    "axios": "^0.27.2",
+    "vue": "^3.2.25",
+    "@vueuse/integrations": "^8.7.4",
+    "@kyvg/vue3-notification": "^2.3.4",
+    "pinia": "^2.0.14",
+    "vue-router": "^4.0.16"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",
