@@ -15,7 +15,7 @@ export const useAuth = defineStore("auth", {
         };
     },
     getters: {
-        user: (state) => JSON.parse(state.admin),
+        user: (state) => state.admin,
         isAuth: (state) => !!state.token,
     },
     actions: {

@@ -3,8 +3,6 @@
   .col-lg-6.col-md-9.d-flex.align-items-center
     .container
       h1.text-center.text-warning
-      h2.text-center.logo_h2
-        img(:src="logo", style='width: 150px', alt='logo')
       form(@submit.prevent='onSubmit')
         .row
           .offset-sm-2.col-sm-8.col-md-8.mt-3.mb-3
@@ -20,6 +18,7 @@
           .offset-sm-2.col-sm-8.col-md-8.mt-3
             Button.primary.mb-3.w-100(type='submit' :suffix-loading="loading") Sign In
   .col-lg-6.col-md-3.col-0.d-none.d-md-flex.login-page
+    img(:src="login")
 </template>
 
 <script lang="ts" setup>
@@ -30,6 +29,7 @@ import * as yup from "yup";
 import {useAuth} from "@/store/auth";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
+import login from "@/assets/images/login.svg";
 
 const {handleSubmit, errors} = useForm({
   validationSchema: yup.object({
@@ -69,12 +69,6 @@ const onSubmit = handleSubmit(() => {
 });
 
 
-const loadUser = () => {
-  axios.get("/api/v1/me").then(({data}) => {
-    auth.setUser(data.user);
-    router.push("/");
-  });
-};
 </script>
 
 <style lang="scss">
