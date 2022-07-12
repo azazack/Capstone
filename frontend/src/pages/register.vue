@@ -3,8 +3,6 @@
   .col-lg-12.d-flex.align-items-center
     .container
       h1.text-center.text-warning
-      h2.text-center.logo_h2
-        img(:src="logo", style='width: 150px', alt='logo')
       form(@submit.prevent='onSubmit')
         .row
           .offset-sm-2.col-sm-8.col-md-8.mt-3.mb-3
