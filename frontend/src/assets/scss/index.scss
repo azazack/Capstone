@@ -1,0 +1,63 @@
+html,
+body,
+#app {
+  --color-background: #e8f5fe;
+  height: 100vh;
+  background-color: var(--color-background);
+}
+
+#app {
+  scroll-behavior: smooth;
+}
+
+.form-field {
+  margin-bottom: 1rem;
+  position: relative;
+  display: block;
+
+  .floated {
+    position: absolute;
+    color: #c3c3c3;
+    left: 0;
+    top: 0;
+    padding: 0 1rem 0 .5rem;
+    margin: 10px 3px;
+    white-space: nowrap;
+    transform: translate(0, 0);
+    transform-origin: 0 0;
+    background: var(--color-background);
+    transition: transform 120ms ease-in;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  textarea.form-control {
+    padding-top: 6px;
+  }
+
+  .form-control {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    background-color: var(--background-color);
+
+    &:focus,
+    &:not(:placeholder-shown) {
+      box-shadow: none;
+
+      & + .floated {
+        transform: translate(0.25rem, -90%) scale(0.8);
+        color: $primary-color;
+        padding: 0 1.5rem 0 0.5rem;
+      }
+    }
+
+    &.is-invalid + .floated {
+      color: $danger;
+    }
+
+    &.is-valid + .floated {
+      color: $success;
+    }
+  }
+}
