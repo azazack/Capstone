@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
 from rest_framework.views import APIView
 from .serializers import UserSerializer
 from rest_framework.response import Response
@@ -13,7 +13,7 @@ from rest_framework import status
 
 class Register(APIView):
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data['user'])
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -21,8 +21,9 @@ class Register(APIView):
 
 class Login(APIView):
     def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
+        user = request.data['user']
+        email = user['email']
+        password = user['password']
 
         user = User.objects.filter(email=email).first()
         if user is None:
@@ -30,6 +31,10 @@ class Login(APIView):
 
         if not user.check_password(password):
             raise AuthenticationFailed('Wrong Credentials')
+
+        auth = authenticate(request, email=email, password=password)
+        if auth is not None:
+            login(request, auth)
 
         payload = {
             'id': user.id,
@@ -42,7 +47,6 @@ class Login(APIView):
         return Response({
             'jwt': token
         })
-
 
 class UserView(APIView):
     def get(self, request):
@@ -68,7 +72,7 @@ class UserView(APIView):
 
 
 class Logout(APIView):
-    def post(self, request):
+    def delete(self, request):
         logout(request)
         return Response({
             'message': "logout"
