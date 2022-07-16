@@ -1,18 +1,24 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import { isAuth, isGuest } from "../middleware/auth";
+import {createRouter, createWebHistory, RouteRecordRaw} from "vue-router";
+import {isAuth, isGuest} from "../middleware/auth";
 
 const routes: RouteRecordRaw[] = [
-    // {
-    //     path: "/",
-    //     beforeEnter: isAuth,
-    //     component: () => import("../layouts/index.vue"),
-    //     children: [
-    //         {
-    //             path: "",
-    //             redirect: "/dashboard",
-    //         },
-    //     ],
-    // },
+    {
+        path: "/",
+        beforeEnter: isAuth,
+        component: () => import("../layouts/index.vue"),
+        children: [
+            {
+                name: "dashboard",
+                path: "dashboard",
+                component: () => import("../pages/dashboard.vue")
+            },
+            {
+                name: "new_depth",
+                path: "/new",
+                component: () => import("../pages/mange/new_depth.vue"),
+            },
+        ],
+    },
     {
         name: "login",
         path: "/login",
@@ -24,12 +30,6 @@ const routes: RouteRecordRaw[] = [
         path: "/register",
         beforeEnter: isGuest,
         component: () => import("../pages/register.vue"),
-    },
-    {
-        name: "test",
-        path: "/",
-        beforeEnter: isAuth,
-        component: () => import("../pages/test.vue"),
     },
 ];
 
