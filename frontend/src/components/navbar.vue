@@ -1,16 +1,16 @@
 <template lang="pug">
-nav#sidebar(v-if="opened")
-  ul.list-unstyled.sidebar-body
-    li(v-for="(item, i) in menu" :key="i")
-      component( :is="item.route ? 'router-link': 'a'" :to="item.route" data-toggle="collapse" :aria-expanded="show === item.name" class="dropdown-toggle collapsed" @click="showing(item.name)")
-        font-awesome-icon.path-icon.me-2(:icon="item.icon" v-if="item.icon" :title="item.name")
-        span.path-text {{ item.name }}
-      transition(name="fadeHeight" mode="out-in" v-if="item.children")
-        ul.list-unstyled( id="homeSubmenu" :class="{ show: show === item.name }" v-show="show === item.name")
-          li( v-for="(subItem, i) in item.children" :key="i")
-            router-link( :to="subItem.route" :class="{ 'router-link-active': $route.name.startsWith(subItem.route.name) }")
-              font-awesome-icon.path-icon.me-2(:icon="subItem.icon" v-if="subItem.icon" :title="subItem.name")
-              span.path-text {{ subItem.name }}
+  nav#sidebar(v-if="opened")
+    ul.list-unstyled.sidebar-body
+      li(v-for="(item, i) in menu" :key="i")
+        component( :is="item.route ? 'router-link': 'a'" :to="item.route" data-toggle="collapse" :aria-expanded="show === item.name" class="dropdown-toggle collapsed" @click="showing(item.name)")
+          font-awesome-icon.path-icon.me-2(:icon="item.icon" v-if="item.icon" :title="item.name")
+          span.path-text {{ item.name }}
+        transition(name="fadeHeight" mode="out-in" v-if="item.children")
+          ul.list-unstyled( id="homeSubmenu" :class="{ show: show === item.name }" v-show="show === item.name")
+            li( v-for="(subItem, i) in item.children" :key="i")
+              router-link( :to="subItem.route" :class="{ 'router-link-active': $route.name.startsWith(subItem.route.name) }")
+                font-awesome-icon.path-icon.me-2(:icon="subItem.icon" v-if="subItem.icon" :title="subItem.name")
+                span.path-text {{ subItem.name }}
 </template>
 
 <script lang="ts" setup>
@@ -46,6 +46,7 @@ onBeforeMount(() => {
       });
     }
   });
+  console.log("mounted")
 });
 
 function showing(item: string): void {
