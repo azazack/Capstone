@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Transaction
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,3 +17,18 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ['id', 'amount', 'sender', 'receiver', 'paid','created_at']
+
+
+class GetTransactionSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
+    receiver = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Transaction
+        fields = ['id', 'amount', 'sender', 'receiver', 'paid','created_at']

@@ -1,12 +1,11 @@
-from django.shortcuts import render
 from django.contrib.auth import logout, authenticate, login
 from rest_framework.views import APIView
-from .serializers import UserSerializer
+from ..serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .models import User
+from ..models import User
 import jwt, datetime
-from rest_framework import status
+from ..modules import authenticated_user
 
 
 # Create your views here.
@@ -34,11 +33,12 @@ class Login(APIView):
 
         auth = authenticate(request, email=email, password=password)
         if auth is not None:
+            print('not logged')
             login(request, auth)
 
         payload = {
             'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30),
             'iat': datetime.datetime.utcnow()
         }
 
@@ -48,27 +48,25 @@ class Login(APIView):
             'jwt': token
         })
 
+
 class UserView(APIView):
     def get(self, request):
-        if 'authorization' in request.headers:
-            token = request.headers['authorization']
-
-            if not token:
-                raise AuthenticationFailed("Unauthenticated")
-
-            try:
-                payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-            except jwt.ExpiredSignatureError:
-                raise AuthenticationFailed("Unauthenticated")
-
-            user = User.objects.get(id=payload['id'])
-            serializer = UserSerializer(user)
-            print(user.is_authenticated)
-            return Response(serializer.data)
-        else:
-            return Response({
-                'message': "You are not logged in"
-            }, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(authenticated_user(request))
+        # if 'authorization' in request.headers:
+        #     token = request.headers['authorization']
+        #
+        #     if not token:
+        #         raise AuthenticationFailed("Unauthenticated")
+        #
+        #     try:
+        #         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        #     except jwt.ExpiredSignatureError:
+        #         raise AuthenticationFailed("Unauthenticated")
+        #
+        #     user = User.objects.get(id=payload['id'])
+        #     serializer = UserSerializer(user)
+        #     print(user.is_authenticated)
+        #     return Response(serializer.data)
 
 
 class Logout(APIView):
@@ -77,3 +75,11 @@ class Logout(APIView):
         return Response({
             'message': "logout"
         })
+
+
+class UsersList(APIView):
+    def get(self, request):
+        name = request.GET.get('name')
+        users = User.objects.filter(name__contains=name)
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)

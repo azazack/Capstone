@@ -6,3 +6,10 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
+
+declare interface Menu {
+  icon?: import("@fortawesome/fontawesome-common-types").IconDefinition;
+  name: string;
+  route?: { path?: string; name?: string };
+  children?: Menu[];
+}
