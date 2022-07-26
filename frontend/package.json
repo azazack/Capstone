@@ -9,7 +9,12 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-common-types": "^6.1.1",
-    "@kyvg/vue3-notification": "^2.3.4",
+    "@fortawesome/fontawesome-svg-core": "^6.1.2",
+    "@fortawesome/free-brands-svg-icons": "^6.1.2",
+    "@fortawesome/free-regular-svg-icons": "^6.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.1.2",
+    "@fortawesome/vue-fontawesome": "^3.0.1",
+    "@kyvg/vue3-notification": "^2.3.5",
     "@types/node": "^18.0.3",
     "@vueuse/integrations": "^8.7.4",
     "axios": "^0.27.2",
@@ -21,8 +26,8 @@
     "vee-validate": "^4.5.11",
     "vue": "^3.2.25",
     "vue-router": "^4.0.16",
-    "yup": "^0.32.11",
-    "vue3-click-away": "^1.2.4"
+    "vue3-click-away": "^1.2.4",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",
