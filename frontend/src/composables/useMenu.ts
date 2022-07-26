@@ -5,12 +5,14 @@ export default () => {
         {
             name: "Dashboard",
             route: {name: "dashboard"},
-            children:[
-                {
-                    name: "Dashboard",
-                    route: {name: "dashboard"},
-                }
-            ]
         },
+        {
+            name: "Sent",
+            route: {name: "sent"},
+        },
+        {
+            name: "Received",
+            route: {name: "received"},
+        }
     ])
 }

@@ -3,6 +3,7 @@ from ..serializers import TransactionSerializer, GetTransactionSerializer
 from rest_framework.response import Response
 from ..models import Transaction
 from ..modules import authenticated_user
+from django.db.models import Q
 
 
 class Transactions(APIView):
@@ -24,6 +25,12 @@ class Transactions(APIView):
 class OwnTransactions(APIView):
     def get(self, request):
         user = authenticated_user(request)
-        transactions = Transaction.objects.filter(sender=user['id'])
+        type = request.GET.get('type')
+        if not type:
+            transactions = Transaction.objects.filter(Q(sender=user['id']) | Q(receiver=user['id']))
+        elif type == 'sent':
+            transactions = Transaction.objects.filter(sender=user['id'])
+        elif type == 'received':
+            transactions = Transaction.objects.filter(receiver=user['id'])
         serializer = GetTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
