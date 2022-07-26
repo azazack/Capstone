@@ -1,8 +1,8 @@
 <template lang="pug">
 .container
   //router-link(:to="{name:'new_depth'}")
-  button.primary(@click="test") New Product Tag
-  AddTransaction(:is-open="isOpen" @close="isOpen = false")
+  Button.primary(@click="AddNewTransaction") New Product Tag
+  AddTransaction(:is-open="isOpen" @close="close" @added="loadTransaction")
   .transaction(v-for="transaction in transactions")
     .left-side
       .receiver  Sent To : {{transaction.receiver.name}}
@@ -19,6 +19,7 @@ import isEmpty from "lodash/isEmpty"
 import {ref} from "vue"
 import {format} from 'date-fns'
 import AddTransaction from "../components/AddTransaction.vue";
+import Button from "../components/Button/index.vue"
 
 const auth = useAuth()
 const {axios} = useAxios();
@@ -36,8 +37,7 @@ const DateForm = (date: number): string => {
   return format(new Date(date), 'MM/dd/yyyy')
 }
 
-const test = () => {
-  console.log("test")
+const AddNewTransaction = () => {
   isOpen.value = true
 }
 
@@ -47,14 +47,12 @@ const loadUser = () => {
   });
 };
 
-
-// const test = () => {
-//   axios.delete("/api/v1/logout");
-//   auth.logout();
-//   window.location.reload()
-// }
+const close = () => {
+  isOpen.value = false
+}
 
 const loadTransaction = () => {
+  close()
   axios.get("/api/v1/own_transaction").then(({data}) => {
     transactions.value = data
   })

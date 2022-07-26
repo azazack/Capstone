@@ -6,27 +6,24 @@ modal(v-if="isOpen" @close="isOpen=false")
         label.form-field
           input.form-control(v-model='amount', name='amount' placeholder="Amount" type='number', required)
           span.floated Amount
-          //small.text-danger {{ errors.amount }}
-      .offset-sm-2.col-sm-8.col-md-8
+      .offset-sm-2.col-sm-8.col-md-8.mb-3
         label.form-field
-          //input.form-control(v-model='name', name='receiver' placeholder="Receiver"  v-on:change="loadUser")
-          //span.floated Receiver
           SingleSelect(@updateOption="loadUser" :options="options" title="Receiver" key-only v-model="receiver")
-          //small.text-danger {{ errors.receiver }}
       .offset-sm-2.col-sm-8.col-md-8
         label.form-field
           input.form-control(v-model='date', name='date' placeholder="Date" type="date")
           span.floated Date
-          //small.text-danger {{ errors.receiver }}
       .offset-sm-2.col-sm-8.col-md-8.mt-3
-        Button.primary.mb-3.w-100(type='submit' :suffix-loading="loading") Add transaction
+        Button.primary.mb-3.w-100(type='submit' :loading="loading") Add transaction
 </template>
 <script lang="ts" setup>
 import modal from "../components/modal.vue"
 import useAxios from "@/composables/useAxios";
-import {ref} from "vue";
+import {defineEmits, ref} from "vue";
 import SingleSelect from "./Dropdown/SingleSelect.vue";
 import type {AxiosResponse} from "axios";
+import {notify} from "@kyvg/vue3-notification";
+import Button from "../components/Button/index.vue"
 
 const {axios} = useAxios();
 
@@ -38,14 +35,14 @@ const options = ref([])
 
 const date = ref(new Date())
 
+const loading = ref(false)
+
 
 const props = defineProps({
   isOpen: {type: Boolean},
 })
 
-const test = (test: string) => {
-  console.log(test)
-}
+const emit = defineEmits(["added"])
 
 const loadUser = (name: string) => {
   axios.get(`/api/v1/users`, {params: {name: name}}).then((res: AxiosResponse) => {
@@ -54,7 +51,7 @@ const loadUser = (name: string) => {
 }
 
 const onSubmit = () => {
-  // loading.value = true;
+  loading.value = true;
   axios
       .post("/api/v1/transaction", {
         transaction: {
@@ -63,13 +60,23 @@ const onSubmit = () => {
           due_to: date.value
         },
       })
-  // .then(({data}) => {
-  //   auth.setToken(data.jwt);
-  //   router.push("/");
-  // })
-  // .finally(() => {
-  //   loading.value = false;
-  // });
+      .then(() => {
+        notify({
+          title: "Success",
+          text: "Transaction Added Successfully",
+          type: "success"
+        });
+        emit('added')
+      }).catch(() => {
+    notify({
+      title: "Error",
+      text: "Error While Adding Transaction",
+      type: "error"
+    });
+  })
+  .finally(() => {
+    loading.value = false;
+  });
 };
 
 </script>
