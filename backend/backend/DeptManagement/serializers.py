@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = ['id', 'amount', 'sender', 'receiver', 'paid','created_at']
+        fields = ['id', 'amount', 'sender', 'receiver', 'paid','created_at','due_to']
 
 
 class GetTransactionSerializer(serializers.ModelSerializer):
@@ -31,4 +31,4 @@ class GetTransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ['id', 'amount', 'sender', 'receiver', 'paid','created_at']
+        fields = ['id', 'amount', 'sender', 'receiver', 'paid','created_at','due_to']
