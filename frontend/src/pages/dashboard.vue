@@ -3,24 +3,20 @@
   //router-link(:to="{name:'new_depth'}")
   Button.primary(@click="AddNewTransaction") New Product Tag
   AddTransaction(:is-open="isOpen" @close="close" @added="loadTransaction")
-  .transaction(v-for="transaction in transactions")
-    .left-side
-      .receiver  Sent To : {{transaction.receiver.name}}
-      .amount {{transaction.amount}} $
-    .right-side
-      .test {{DateForm(transaction.created_at)}}
+  TransactionCard(v-for="transaction in transactions" :transaction="transaction")
 </template>
 
 <script lang="ts" setup>
+// Imports
 import useAxios from "../composables/useAxios";
 import {useAuth} from "../store/auth";
 import {onMounted} from "vue";
 import isEmpty from "lodash/isEmpty"
 import {ref} from "vue"
-import {format} from 'date-fns'
 import AddTransaction from "../components/AddTransaction.vue";
 import Button from "../components/Button/index.vue"
-
+import TransactionCard from "../components/Transaction/card.vue"
+// Data
 const auth = useAuth()
 const {axios} = useAxios();
 const isOpen = ref(false)
@@ -33,9 +29,6 @@ onMounted(() => {
   }
 });
 
-const DateForm = (date: number): string => {
-  return format(new Date(date), 'MM/dd/yyyy')
-}
 
 const AddNewTransaction = () => {
   isOpen.value = true
@@ -58,15 +51,3 @@ const loadTransaction = () => {
   })
 }
 </script>
-
-
-<style lang="scss">
-.transaction {
-  display: flex;
-  justify-content: space-between;
-  border: 1px solid gray;
-  margin: 10px 0;
-  padding: 5px;
-  border-radius: 10px;
-}
-</style>
