@@ -11,7 +11,7 @@ modal(v-if="isOpen" @close="isOpen=false")
         label.form-field
           //input.form-control(v-model='name', name='receiver' placeholder="Receiver"  v-on:change="loadUser")
           //span.floated Receiver
-          SingleSelect(@updateOption="loadUser" :options="options" title="Receiver" @selectOption="selectOption" key-only)
+          SingleSelect(@updateOption="loadUser" :options="options" title="Receiver" key-only v-model="receiver")
           //small.text-danger {{ errors.receiver }}
       .offset-sm-2.col-sm-8.col-md-8
         label.form-field
@@ -38,9 +38,6 @@ const options = ref([])
 
 const date = ref(new Date())
 
-const selectOption = (user) => {
-  console.log(user)
-}
 
 const props = defineProps({
   isOpen: {type: Boolean},

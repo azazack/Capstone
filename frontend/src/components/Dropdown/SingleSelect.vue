@@ -1,7 +1,7 @@
 <template lang="pug">
 input.form-control(v-model='value' :placeholder="title")
 span.floated {{title}}
-.options
+.options(v-if="showOptions &&  options.length" v-click-away="hideOptions")
   .option(@click="selectOption(option)" v-for="option in options") {{getValue(option)}}
 </template>
 
@@ -17,7 +17,9 @@ const props = defineProps({
 })
 const value = ref("")
 
-const emit = defineEmits(["updateOption", "selectOption"]);
+const showOptions = ref(false)
+
+const emit = defineEmits(["updateOption", "selectOption", "update:modelValue"]);
 
 const getKey = (option: Record<string, string>) => {
   return option[props.key]
@@ -25,24 +27,33 @@ const getKey = (option: Record<string, string>) => {
 const getValue = (option: Record<string, string>) => {
   return option[props.value]
 }
-const selectOption = (option:Record<string, string>)=> {
-  value.value = option[props.value];
-  if(props.keyOnly) {
-    emit('selectOption',getKey(option))
-  } else {
-    emit('selectOption',option)
-  }
+
+const hideOptions = () => {
+  showOptions.value = false;
 }
+
+const selectOption = (option: Record<string, string>) => {
+  value.value = option[props.value];
+  emit("update:modelValue", props.keyOnly ? getKey(option) : option);
+  if (props.keyOnly) {
+    emit('selectOption', getKey(option))
+  } else {
+    emit('selectOption', option)
+  }
+  hideOptions()
+}
+
 watch(
     () => value.value,
     (val: string): void => {
+      showOptions.value = true
       emit("updateOption", val);
     },
 );
 </script>
 
 <style lang="scss">
-.options{
+.options {
   background: white;
   position: absolute;
   z-index: 999;
