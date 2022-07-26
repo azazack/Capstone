@@ -21,7 +21,8 @@
     "vee-validate": "^4.5.11",
     "vue": "^3.2.25",
     "vue-router": "^4.0.16",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "vue3-click-away": "^1.2.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",

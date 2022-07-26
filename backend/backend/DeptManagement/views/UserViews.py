@@ -52,21 +52,6 @@ class Login(APIView):
 class UserView(APIView):
     def get(self, request):
         return Response(authenticated_user(request))
-        # if 'authorization' in request.headers:
-        #     token = request.headers['authorization']
-        #
-        #     if not token:
-        #         raise AuthenticationFailed("Unauthenticated")
-        #
-        #     try:
-        #         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        #     except jwt.ExpiredSignatureError:
-        #         raise AuthenticationFailed("Unauthenticated")
-        #
-        #     user = User.objects.get(id=payload['id'])
-        #     serializer = UserSerializer(user)
-        #     print(user.is_authenticated)
-        #     return Response(serializer.data)
 
 
 class Logout(APIView):
@@ -80,6 +65,9 @@ class Logout(APIView):
 class UsersList(APIView):
     def get(self, request):
         name = request.GET.get('name')
-        users = User.objects.filter(name__contains=name)
+        if not name:
+            users = User.objects.all()
+        else:
+            users = User.objects.filter(name__contains=name)
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
