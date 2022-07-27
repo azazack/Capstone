@@ -19,7 +19,7 @@ modal(v-if="isOpen" @close="isOpen=false")
 <script lang="ts" setup>
 import modal from "../components/modal.vue"
 import useAxios from "@/composables/useAxios";
-import {defineEmits, ref} from "vue";
+import {ref} from "vue";
 import SingleSelect from "./Dropdown/SingleSelect.vue";
 import type {AxiosResponse} from "axios";
 import {notify} from "@kyvg/vue3-notification";

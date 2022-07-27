@@ -27,7 +27,7 @@ class OwnTransactions(APIView):
         user = authenticated_user(request)
         type = request.GET.get('type')
         if not type:
-            transactions = Transaction.objects.filter(Q(sender=user['id']) | Q(receiver=user['id']))
+            transactions = Transaction.objects.filter(Q(sender=user['id']) | Q(receiver=user['id'])).order_by('-created_at')
         elif type == 'sent':
             transactions = Transaction.objects.filter(sender=user['id'])
         elif type == 'received':
