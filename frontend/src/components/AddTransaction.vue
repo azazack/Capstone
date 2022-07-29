@@ -6,15 +6,15 @@ Modal(v-if="isOpen" @close="isOpen=false")
         label.form-field
           input.form-control(v-model='amount', name='amount' placeholder="Amount" type='number', required)
           span.floated Amount
-      .offset-sm-2.col-sm-8.col-md-8.mb-3
+      .offset-sm-2.col-sm-8.col-md-8.mb-3(v-if="!isEdit")
         label.form-field
-          SingleSelect(@updateOption="loadUser" :options="options" title="Receiver" key-only v-model="receiver")
+          SingleSelect(@updateOption="loadUser" :options="options" title="Receiver" v-model="receiver" key-only )
       .offset-sm-2.col-sm-8.col-md-8
         label.form-field
           input.form-control(v-model='date', name='date' placeholder="Date" type="date")
           span.floated Date
       .offset-sm-2.col-sm-8.col-md-8.mt-3
-        Button.primary.mb-3.w-100(type='submit' :loading="loading") Add transaction
+        Button.primary.mb-3.w-100(type='submit' :loading="loading") {{isEdit ? 'Edit':'Add'}} transaction
 </template>
 <script lang="ts" setup>
 import Modal from "../components/modal.vue"
@@ -25,6 +25,7 @@ import type {AxiosResponse} from "axios";
 import {notify} from "@kyvg/vue3-notification";
 import Button from "../components/Button/index.vue"
 import isEmpty from "lodash/isEmpty"
+
 const {axios} = useAxios();
 
 const amount = ref(0)
@@ -60,8 +61,9 @@ const isEdit = computed(() => {
 
 const onSubmit = () => {
   loading.value = true;
+  if(!isEdit.value){
   axios
-      .post("/api/v1/transaction", {
+      .post("/api/v1/transactions", {
         transaction: {
           amount: amount.value,
           receiver: receiver.value,
@@ -85,14 +87,39 @@ const onSubmit = () => {
   .finally(() => {
     loading.value = false;
   });
+  } else {
+    axios.put(`/api/v1/transactions/${props.transaction.id}`, {
+      transaction: {
+        amount: amount.value,
+        due_to: date.value,
+        receiver:props.transaction?.receiver.id
+      },
+    })      .then(() => {
+      notify({
+        title: "Success",
+        text: "Transaction Edited Successfully",
+        type: "success"
+      });
+      emit('added')
+    }).catch(() => {
+      notify({
+        title: "Error",
+        text: "Error While Editing Transaction",
+        type: "error"
+      });
+    })
+        .finally(() => {
+          loading.value = false;
+        });
+  }
+
 };
 
 watch(
     () => props.transaction,
     () => {
       amount.value = props.transaction.amount;
-      receiver.value = props.transaction?.receiver;
-      date.value = props.transaction?.date;
+      date.value = props.transaction?.due_to;
     },
     { immediate: true, deep: true }
 );
