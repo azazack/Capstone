@@ -61,7 +61,7 @@ const onSubmit = handleSubmit(() => {
       })
       .then(({data}) => {
         auth.setToken(data.jwt);
-        router.push("/");
+        router.push("/dashboard");
       })
       .finally(() => {
         loading.value = false;

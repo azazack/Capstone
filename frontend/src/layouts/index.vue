@@ -1,4 +1,5 @@
 <template lang="pug">
+TopBar
 Sidebar.side-fixed(:menu="menu" :opened="isOpen")
 .wrapper(:class="{ 'wrapper-mobile': isMobile }")
   .w-100.py-3
@@ -13,6 +14,7 @@ import useMenu from "@/composables/useMenu";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import Sidebar from "@/components/navbar.vue";
 import { breakpointsBootstrapV5, useBreakpoints } from "@vueuse/core";
+import TopBar from "../components/TopBar/index.vue";
 
 const opened = ref(false);
 
@@ -67,12 +69,12 @@ const menu = useMenu();
 }
 .wrapper {
   width: calc(100% - 250px);
-  height: 100%;
+  height: calc(100% - 50px);
   align-items: stretch;
   margin-left: 250px;
   padding-left: 1rem;
   padding-right: 1rem;
-
+  padding-top: 50px;
   #page-indicator {
     font-weight: 500;
     font-size: 14px;

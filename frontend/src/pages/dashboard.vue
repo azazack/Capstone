@@ -1,9 +1,15 @@
 <template lang="pug">
-.container
-  //router-link(:to="{name:'new_depth'}")
-  Button.primary(@click="AddNewTransaction") New Product Tag
+.container.dashboard
   AddTransaction(:is-open="isOpen" @close="close" @added="loadTransaction")
-  TransactionCard(v-for="transaction in transactions" :transaction="transaction")
+  h1 Transactions
+  .d-flex.justify-content-between
+    Button.primary(@click="AddNewTransaction") New Transaction
+    .d-flex
+      p  Sent
+        span.type.sender-type.me-3.ms-2
+      p Received
+        span.type.receiver-type.ms-2
+  TransactionCard(v-for="transaction in transactions" :transaction="transaction" @edit="isOpen = true")
 </template>
 
 <script lang="ts" setup>
@@ -29,7 +35,6 @@ onMounted(() => {
   }
 });
 
-
 const AddNewTransaction = () => {
   isOpen.value = true
 }
@@ -51,3 +56,19 @@ const loadTransaction = () => {
   })
 }
 </script>
+
+<style lang="scss">
+.dashboard{
+  .type {
+    padding: 4px 10px;
+    color: white;
+    border-radius: 5px;
+    &.sender-type {
+      background-color: green;
+    }
+    &.receiver-type {
+      background-color: red;
+    }
+  }
+}
+</style>

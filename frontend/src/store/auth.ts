@@ -3,14 +3,14 @@ import { useStorage } from "@vueuse/core";
 import type { RemovableRef } from "@vueuse/shared";
 
 interface Auth {
-    admin: RemovableRef<string>;
+    admin: RemovableRef<Record<string, unknown>>;
     token: RemovableRef<string>;
 }
 
 export const useAuth = defineStore("auth", {
     state: (): Auth => {
         return {
-            admin: useStorage("user", ""),
+            admin: useStorage("user", {}),
             token: useStorage("token", ""),
         };
     },
@@ -23,7 +23,7 @@ export const useAuth = defineStore("auth", {
             localStorage.clear();
         },
         setUser(user: Record<string, string>) {
-            this.admin = JSON.stringify(user);
+            this.admin = user
         },
         setToken(token: string) {
             this.token = token;
