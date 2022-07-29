@@ -1,5 +1,6 @@
 <template lang="pug">
 .container
+  h1 Received
   TransactionCard(v-for="transaction in transactions" :transaction="transaction")
 </template>
 

@@ -69,6 +69,7 @@ function showing(item: string): void {
 }
 
 #sidebar {
+  margin-top: 50px;
   min-width: 250px;
   max-width: 250px;
   min-height: 100vh;
