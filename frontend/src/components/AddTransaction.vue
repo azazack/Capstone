@@ -11,7 +11,7 @@ Modal(v-if="isOpen" @close="isOpen=false")
           SingleSelect(@updateOption="loadUser" :options="options" title="Receiver" v-model="receiver" key-only )
       .offset-sm-2.col-sm-8.col-md-8
         label.form-field
-          input.form-control(v-model='date', name='date' placeholder="Date" type="date")
+          input.form-control(v-model='date', name='date' placeholder="Date" type="date" :min="todayDate()")
           span.floated Date
       .offset-sm-2.col-sm-8.col-md-8.mt-3
         Button.primary.mb-3.w-100(type='submit' :loading="loading") {{isEdit ? 'Edit':'Add'}} transaction
@@ -25,6 +25,7 @@ import type {AxiosResponse} from "axios";
 import {notify} from "@kyvg/vue3-notification";
 import Button from "../components/Button/index.vue"
 import isEmpty from "lodash/isEmpty"
+import {format} from "date-fns";
 
 const {axios} = useAxios();
 
@@ -58,6 +59,10 @@ const isEdit = computed(() => {
   return !isEmpty(props.transaction.id);
 });
 
+const todayDate = () => {
+  return format(new Date(), 'yyyy-mm-dd')
+}
+
 
 const onSubmit = () => {
   loading.value = true;
@@ -66,7 +71,6 @@ const onSubmit = () => {
       .post("/api/v1/transactions", {
         transaction: {
           amount: amount.value,
-          receiver: receiver.value,
           due_to: date.value
         },
       })
@@ -120,6 +124,7 @@ watch(
     () => {
       amount.value = props.transaction.amount;
       date.value = props.transaction?.due_to;
+      console.log(todayDate())
     },
     { immediate: true, deep: true }
 );
