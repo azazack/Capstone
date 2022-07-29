@@ -1,5 +1,5 @@
 <template lang="pug">
-modal(v-if="isOpen" @close="isOpen=false")
+Modal(v-if="isOpen" @close="isOpen=false")
   form(@submit.prevent='onSubmit')
     .row
       .offset-sm-2.col-sm-8.col-md-8.mt-3.mb-3
@@ -17,14 +17,14 @@ modal(v-if="isOpen" @close="isOpen=false")
         Button.primary.mb-3.w-100(type='submit' :loading="loading") Add transaction
 </template>
 <script lang="ts" setup>
-import modal from "../components/modal.vue"
+import Modal from "../components/modal.vue"
 import useAxios from "@/composables/useAxios";
-import {ref} from "vue";
+import {ref, computed,watch} from "vue";
 import SingleSelect from "./Dropdown/SingleSelect.vue";
 import type {AxiosResponse} from "axios";
 import {notify} from "@kyvg/vue3-notification";
 import Button from "../components/Button/index.vue"
-
+import isEmpty from "lodash/isEmpty"
 const {axios} = useAxios();
 
 const amount = ref(0)
@@ -40,7 +40,10 @@ const loading = ref(false)
 
 const props = defineProps({
   isOpen: {type: Boolean},
-})
+  transaction: {
+    type: Object,
+    default: () => ({ amount: 0, receiver: 0,date:new Date() }),
+  },})
 
 const emit = defineEmits(["added"])
 
@@ -49,6 +52,11 @@ const loadUser = (name: string) => {
     options.value = res.data
   })
 }
+
+const isEdit = computed(() => {
+  return !isEmpty(props.transaction.id);
+});
+
 
 const onSubmit = () => {
   loading.value = true;
@@ -79,4 +87,13 @@ const onSubmit = () => {
   });
 };
 
+watch(
+    () => props.transaction,
+    () => {
+      amount.value = props.transaction.amount;
+      receiver.value = props.transaction?.receiver;
+      date.value = props.transaction?.date;
+    },
+    { immediate: true, deep: true }
+);
 </script>
