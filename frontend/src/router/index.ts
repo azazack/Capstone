@@ -23,6 +23,11 @@ const routes: RouteRecordRaw[] = [
                 component: () => import("../pages/received.vue")
             },
             {
+                name: "paid",
+                path: "paid",
+                component: () => import("../pages/paid.vue")
+            },
+            {
                 name: "new_depth",
                 path: "/new",
                 component: () => import("../pages/mange/new_depth.vue"),

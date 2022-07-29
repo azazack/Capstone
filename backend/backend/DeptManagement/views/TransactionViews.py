@@ -25,21 +25,27 @@ class Transactions(APIView):
         serializer = GetTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
-    def put(self,request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         id = self.kwargs['id']
         user = authenticated_user(request)
         transaction = Transaction.objects.filter(pk=id).first()
         transaction_data = request.data['transaction']
-        transaction_data['sender'] = user['id']
-        print(transaction_data)
-        transaction_serializer = TransactionSerializer(transaction,data=transaction_data)
+        transaction_serializer = TransactionSerializer(transaction, data=transaction_data, partial=True)
         if transaction_serializer.is_valid():
             transaction_serializer.save()
-            print(transaction_data)
         return JsonResponse(transaction_serializer.errors)
-        #
-        # serializer = GetTransactionSerializer(transaction, many=True)
-        # return Response(serializer.data)
+
+
+class PaidTransaction(APIView):
+    def put(self, request, *args, **kwargs):
+        transaction_data = {}
+        id = self.kwargs['id']
+        transaction = Transaction.objects.filter(pk=id).first()
+        transaction_data['paid'] = True
+        transaction_serializer = TransactionSerializer(transaction, data=transaction_data, partial=True)
+        if transaction_serializer.is_valid():
+            transaction_serializer.save()
+        return JsonResponse(transaction_serializer.errors)
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -56,10 +62,12 @@ class OwnTransactions(APIView):
         type = request.GET.get('type')
         if not type:
             transactions = Transaction.objects.filter(Q(sender=user['id']) | Q(receiver=user['id'])).order_by(
-                '-created_at')
+                'paid', '-created_at')
         elif type == 'sent':
             transactions = Transaction.objects.filter(sender=user['id'])
         elif type == 'received':
             transactions = Transaction.objects.filter(receiver=user['id'])
+        elif type == 'paid':
+            transactions = Transaction.objects.filter(paid=True).filter(Q(sender=user['id']) | Q(receiver=user['id']))
         serializer = GetTransactionSerializer(transactions, many=True)
         return Response(serializer.data)

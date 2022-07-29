@@ -13,6 +13,10 @@ export default () => {
         {
             name: "Received",
             route: {name: "received"},
+        },
+        {
+            name: "Paid",
+            route: {name: "paid"},
         }
     ])
 }
