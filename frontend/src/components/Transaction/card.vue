@@ -4,7 +4,8 @@
     .receiver  Sent To : {{transaction.receiver.name}}
     .amount {{transaction.amount}} $
   .right-side
-    .test {{DateForm(transaction.created_at)}}
+    .test Created: {{DateForm(transaction.created_at)}}
+    .test Due To: {{DateForm(transaction.due_to)}}
     Options
       .menu-item(@click="emit('edit')") Edit
 </template>

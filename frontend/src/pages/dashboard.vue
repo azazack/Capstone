@@ -1,6 +1,6 @@
 <template lang="pug">
 .container.dashboard
-  AddTransaction(:is-open="isOpen" @close="close" @added="loadTransaction")
+  AddTransaction(:is-open="isOpen" @close="close" @added="loadTransaction" :transaction="selectedTransaction")
   h1 Transactions
   .d-flex.justify-content-between
     Button.primary(@click="AddNewTransaction") New Transaction
@@ -9,7 +9,7 @@
         span.type.sender-type.me-3.ms-2
       p Received
         span.type.receiver-type.ms-2
-  TransactionCard(v-for="transaction in transactions" :transaction="transaction" @edit="isOpen = true")
+  TransactionCard(v-for="transaction in transactions" :transaction="transaction" @edit="openEdit(transaction)")
 </template>
 
 <script lang="ts" setup>
@@ -35,7 +35,10 @@ onMounted(() => {
   }
 });
 
+const selectedTransaction = ref({})
+
 const AddNewTransaction = () => {
+  selectedTransaction.value = {}
   isOpen.value = true
 }
 
@@ -47,6 +50,11 @@ const loadUser = () => {
 
 const close = () => {
   isOpen.value = false
+}
+
+const openEdit = (transaction:Record<string, string>) => {
+  selectedTransaction.value = transaction
+  isOpen.value = true
 }
 
 const loadTransaction = () => {

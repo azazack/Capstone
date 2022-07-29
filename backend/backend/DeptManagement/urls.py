@@ -7,6 +7,7 @@ urlpatterns = [
     path('me', UserView.as_view()),
     path('logout', Logout.as_view()),
     path('users', UsersList.as_view()),
-    path('transaction', Transactions.as_view()),
+    path('transactions', Transactions.as_view()),
+    path('transactions/<uuid:id>', Transactions.as_view()),
     path('own_transaction', OwnTransactions.as_view())
 ]

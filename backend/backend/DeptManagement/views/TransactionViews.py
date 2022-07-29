@@ -1,3 +1,6 @@
+from django.http import JsonResponse
+from rest_framework import status
+from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from ..serializers import TransactionSerializer, GetTransactionSerializer
 from rest_framework.response import Response
@@ -17,10 +20,26 @@ class Transactions(APIView):
         serializer.save()
         return Response(serializer.data)
 
-    def get(self, request):
+    def get(self):
         transactions = Transaction.objects.all()
         serializer = GetTransactionSerializer(transactions, many=True)
         return Response(serializer.data)
+
+    def put(self,request, *args, **kwargs):
+        id = self.kwargs['id']
+        user = authenticated_user(request)
+        transaction = Transaction.objects.filter(pk=id).first()
+        transaction_data = request.data['transaction']
+        transaction_data['sender'] = user['id']
+        print(transaction_data)
+        transaction_serializer = TransactionSerializer(transaction,data=transaction_data)
+        if transaction_serializer.is_valid():
+            transaction_serializer.save()
+            print(transaction_data)
+        return JsonResponse(transaction_serializer.errors)
+        #
+        # serializer = GetTransactionSerializer(transaction, many=True)
+        # return Response(serializer.data)
 
 
 class StandardResultsSetPagination(PageNumberPagination):

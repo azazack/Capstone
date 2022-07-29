@@ -46,7 +46,6 @@ onBeforeMount(() => {
       });
     }
   });
-  console.log("mounted")
 });
 
 function showing(item: string): void {
