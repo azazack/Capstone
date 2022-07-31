@@ -10,6 +10,7 @@
       p Received
         span.type.receiver-type.ms-2
   TransactionCard(v-for="transaction in transactions" :transaction="transaction" @edit="openEdit(transaction)" @paid="markAsPaid(transaction.id)" editable)
+  Pagination(:paginate="pagination")
 </template>
 
 <script lang="ts" setup>
@@ -23,12 +24,12 @@ import AddTransaction from "../components/AddTransaction.vue";
 import Button from "../components/Button/index.vue"
 import TransactionCard from "../components/Transaction/card.vue"
 import {notify} from "@kyvg/vue3-notification";
+import Pagination from "../components/Pagination/index.vue"
 // Data
 const auth = useAuth()
 const {axios} = useAxios();
 const isOpen = ref(false)
 const transactions = ref([])
-
 onMounted(() => {
   loadTransaction()
   if (isEmpty(auth.user)) {
@@ -42,6 +43,8 @@ const AddNewTransaction = () => {
   selectedTransaction.value = {}
   isOpen.value = true
 }
+
+const pagination = ref({})
 
 const loadUser = () => {
   axios.get("/api/v1/me").then(({data}) => {
@@ -60,8 +63,9 @@ const openEdit = (transaction:Record<string, string>) => {
 
 const loadTransaction = () => {
   close()
-  axios.get("/api/v1/own_transaction").then(({data}) => {
-    transactions.value = data
+  axios.get("/api/v1/own_transaction?page=2").then(({data}) => {
+    transactions.value = data.data
+    pagination.value = data.meta
   })
 }
 
