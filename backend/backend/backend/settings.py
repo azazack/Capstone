@@ -27,6 +27,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'DeptManagement.modules.pagination.CustomPagination',
+    'PAGE_SIZE': 8,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )

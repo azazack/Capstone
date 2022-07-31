@@ -1,14 +1,12 @@
 from django.http import JsonResponse
-from rest_framework import status
-from rest_framework.parsers import JSONParser
+from rest_framework import generics
 from rest_framework.views import APIView
 from ..serializers import TransactionSerializer, GetTransactionSerializer
 from rest_framework.response import Response
 from ..models import Transaction
 from ..modules import authenticated_user
 from django.db.models import Q
-from rest_framework.pagination import PageNumberPagination
-
+from ..modules.pagination import CustomPagination
 
 class Transactions(APIView):
     def post(self, request):
@@ -48,26 +46,30 @@ class PaidTransaction(APIView):
         return JsonResponse(transaction_serializer.errors)
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 2
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
+class OwnTransactions(generics.ListAPIView):
+    serializer_class = GetTransactionSerializer
 
-
-class OwnTransactions(APIView):
-    pagination_class = StandardResultsSetPagination
-
-    def get(self, request):
-        user = authenticated_user(request)
-        type = request.GET.get('type')
+    def get_queryset(self):
+        user = authenticated_user(self.request)
+        type = self.request.GET.get('type')
         if not type:
             transactions = Transaction.objects.filter(Q(sender=user['id']) | Q(receiver=user['id'])).order_by(
                 'paid', '-created_at')
-        elif type == 'sent':
-            transactions = Transaction.objects.filter(sender=user['id'])
-        elif type == 'received':
-            transactions = Transaction.objects.filter(receiver=user['id'])
-        elif type == 'paid':
-            transactions = Transaction.objects.filter(paid=True).filter(Q(sender=user['id']) | Q(receiver=user['id']))
-        serializer = GetTransactionSerializer(transactions, many=True)
-        return Response(serializer.data)
+        # queryset = Transaction.objects.all().order_by('-date')
+        return transactions
+# class OwnTransactions(APIView,CustomPagination):
+#
+#     def get(self, request):
+#         user = authenticated_user(request)
+#         type = request.GET.get('type')
+#         if not type:
+#             transactions = Transaction.objects.filter(Q(sender=user['id']) | Q(receiver=user['id'])).order_by(
+#                 'paid', '-created_at')
+#         elif type == 'sent':
+#             transactions = Transaction.objects.filter(sender=user['id'])
+#         elif type == 'received':
+#             transactions = Transaction.objects.filter(receiver=user['id'])
+#         elif type == 'paid':
+#             transactions = Transaction.objects.filter(paid=True).filter(Q(sender=user['id']) | Q(receiver=user['id']))
+#         serializer = GetTransactionSerializer(transactions, many=True)
+#         return Response(serializer.data,status=200)
