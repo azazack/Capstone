@@ -80,6 +80,10 @@ function showing(item: string): void {
   box-shadow: -3px 4px 4px 0px #555;
   border-bottom-right-radius: 20px;
 
+  @include media-breakpoint-down(sm) {
+    margin-top: -11px;
+  }
+
   .logo-nav {
     padding-top: 35px;
     padding-bottom: 35px;

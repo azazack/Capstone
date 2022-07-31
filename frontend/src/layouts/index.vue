@@ -1,5 +1,5 @@
 <template lang="pug">
-TopBar
+TopBar(:is-mobile="isMobile" @showSidebar="opened = !opened")
 Sidebar.side-fixed(:menu="menu" :opened="isOpen")
 .wrapper(:class="{ 'wrapper-mobile': isMobile }")
   .w-100.py-3
