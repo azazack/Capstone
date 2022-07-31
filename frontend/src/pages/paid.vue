@@ -26,7 +26,7 @@ const loadTransaction = () => {
       type: "paid"
     }
   }).then(({data}) => {
-    transactions.value = data
+    transactions.value = data.data
   })
 }
 </script>

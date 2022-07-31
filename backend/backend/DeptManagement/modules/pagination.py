@@ -7,7 +7,7 @@ class CustomPagination(PageNumberPagination):
         return Response({
             'meta': {
                 'total_count': self.page.paginator.count,
-                'total_pages': self.page.paginator.num_pages,
+                'last_page': self.page.paginator.num_pages,
                 'next_page': self.page.number if not self.page.has_next() else self.page.next_page_number(),
                 'prev_page': self.page.number if not self.page.has_previous() else self.page.previous_page_number(),
                 'current_page': self.page.number
