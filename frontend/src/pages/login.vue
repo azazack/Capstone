@@ -30,6 +30,7 @@ import {useAuth} from "@/store/auth";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import login from "@/assets/images/login.svg";
+import Button from "../components/Button/index.vue"
 
 const {handleSubmit, errors} = useForm({
   validationSchema: yup.object({
