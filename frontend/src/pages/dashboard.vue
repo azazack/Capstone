@@ -10,7 +10,8 @@
       p Received
         span.type.receiver-type.ms-2
   TransactionCard(v-for="transaction in transactions" :transaction="transaction" @edit="openEdit(transaction)" @paid="markAsPaid(transaction.id)" editable)
-  Pagination(:paginate="pagination")
+  .text-center
+    Pagination(:paginate="pagination" @page-changed="changePage")
 </template>
 
 <script lang="ts" setup>
@@ -36,6 +37,8 @@ onMounted(() => {
     loadUser()
   }
 });
+
+const page = ref(1)
 
 const selectedTransaction = ref({})
 
@@ -63,10 +66,19 @@ const openEdit = (transaction:Record<string, string>) => {
 
 const loadTransaction = () => {
   close()
-  axios.get("/api/v1/own_transaction?page=2").then(({data}) => {
+  axios.get("/api/v1/own_transaction",{
+    params:{
+      page:page.value
+    }
+  }).then(({data}) => {
     transactions.value = data.data
     pagination.value = data.meta
   })
+}
+
+const changePage = (selectedPage:number) => {
+  page.value = selectedPage
+  loadTransaction()
 }
 
 const markAsPaid = (id:string) => {

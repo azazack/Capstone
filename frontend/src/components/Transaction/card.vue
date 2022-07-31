@@ -1,7 +1,7 @@
 <template lang="pug">
 .transaction(:class="{sender: isSender(transaction.sender.id), receiver: !isSender(transaction.sender.id), paid:transaction.paid }" )
   .left-side
-    .receiver  Sent To : {{transaction.receiver.name}}
+    .receiver  {{isSender(transaction.sender.id) ? 'Sent to' : 'Received from'}} To : {{transaction.receiver.name}}
     .amount {{transaction.amount}} $
   .right-side
     .test Created: {{DateForm(transaction.created_at)}}

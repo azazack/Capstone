@@ -55,21 +55,10 @@ class OwnTransactions(generics.ListAPIView):
         if not type:
             transactions = Transaction.objects.filter(Q(sender=user['id']) | Q(receiver=user['id'])).order_by(
                 'paid', '-created_at')
-        # queryset = Transaction.objects.all().order_by('-date')
+        elif type == 'sent':
+            transactions = Transaction.objects.filter(sender=user['id'])
+        elif type == 'received':
+            transactions = Transaction.objects.filter(receiver=user['id'])
+        elif type == 'paid':
+            transactions = Transaction.objects.filter(paid=True).filter(Q(sender=user['id']) | Q(receiver=user['id']))
         return transactions
-# class OwnTransactions(APIView,CustomPagination):
-#
-#     def get(self, request):
-#         user = authenticated_user(request)
-#         type = request.GET.get('type')
-#         if not type:
-#             transactions = Transaction.objects.filter(Q(sender=user['id']) | Q(receiver=user['id'])).order_by(
-#                 'paid', '-created_at')
-#         elif type == 'sent':
-#             transactions = Transaction.objects.filter(sender=user['id'])
-#         elif type == 'received':
-#             transactions = Transaction.objects.filter(receiver=user['id'])
-#         elif type == 'paid':
-#             transactions = Transaction.objects.filter(paid=True).filter(Q(sender=user['id']) | Q(receiver=user['id']))
-#         serializer = GetTransactionSerializer(transactions, many=True)
-#         return Response(serializer.data,status=200)
