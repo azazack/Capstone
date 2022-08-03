@@ -124,7 +124,6 @@ watch(
     () => {
       amount.value = props.transaction.amount;
       date.value = props.transaction?.due_to;
-      console.log(todayDate())
     },
     { immediate: true, deep: true }
 );
